@@ -1,24 +1,38 @@
 /* ==UserStyle==
-@name           Repositories Grid For GitHub
+@name           `Repositories Grid For GitHub
 @author         sapondanaisriwan <sapondanaisriwan@gmail.com> (https://github.com/sapondanaisriwan)
 @description    If you want to submit a bug or request a feature please report via github issue. Since I receive so many emails, I can't reply to them all.
 @namespace      https://userstyles.world/user/sapondanaisriwan
 @homepageURL    https://github.com/sapondanaisriwan/Repositories-Grid-For-GitHub
 @supportURL     https://github.com/sapondanaisriwan/Repositories-Grid-For-GitHub/issues
-@version        1.0.0
+@version        1.0.1
 @license        MIT
 @preprocessor   stylus
 
-@var checkbox fullDescription   "💬 Full Description" 0
-@var checkbox showRepository    "📗 Show Repository Icon" 1
-@var select starNewDesign       "⭐ Star New Design" ["Enabled", "Disabled"]
-@var checkbox hideStarText      "  💬 Hide Text" 1
-@var checkbox dropDownMenu      "  ⬇️ Hide Drop Down Menu" 0
+@var select starNewDesign         "⭐ Star New Design" ["Enabled", "Disabled"]
+@var checkbox hideStarText        "  💬 Hide Text" 1
+@var checkbox dropDownMenu        "  ⬇️ Hide Drop Down Menu" 0
 
-@var checkbox hideForked        "🍴 Hide Forked Text" 0
-@var checkbox hideTopics        "🌍 Hide Topics" 1
-@var checkbox hideHelp	        "🆘 Hide Help Wanted" 1
-@var checkbox hideLicense	    "🪪 Hide License" 1
+@var select resTap                "📚 Respasatories Tap" ["Enabled", "Disabled"]
+@var checkbox fullDescription     "  💬 Full Description" 0
+@var checkbox showRepository      "  📗 Show Repository Icon" 1
+
+@var checkbox hideForked          "  🍴 Hide Forked Text" 0
+@var checkbox hideTopics          "  🌍 Hide Topics" 1
+@var checkbox hideHelp	          "  🆘 Hide Help Wanted" 1
+@var checkbox hideLicense	      "  🪪 Hide License" 1
+
+@var select starsTap              "⭐ Stars Tap" ["Enabled", "Disabled"]
+@var checkbox stHideSponsors      "  💵 Hide Sponsors" 1
+@var checkbox stHideAuthor        "  🖊️ Hide Author" 1
+
+@var select searchPage          "🔎 Search Page" ["Enabled", "Disabled"]
+@var checkbox spHideSponsors      "  💵 Hide Sponsors" 1
+@var checkbox spHideTopics        "  🌍 Hide Topics" 1
+@var checkbox spHideUpdate        "  💬 Hide Update Text" 1
+@var checkbox spfullDescription   "  💬 Full Description" 1
+@var checkbox spHideHelp	      "  🆘 Hide Help Wanted" 1
+
 ==/UserStyle== */
 @-moz-document regexp("https?://github?.com(/.*)?") {
     /* Variables */
@@ -26,135 +40,242 @@
     t=!transparent;
 
     :root {
-        --repository-icon: url("https://user-images.githubusercontent.com/64634605/229117567-4202d4fc-4dc7-417f-962b-e85e638f21d2.png")
+        --repository-icon: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAN1JREFUOE/tk8ENwjAMRb9BcKUbABN0BDICo7RHSiuCWsIx2QBGYARWYIOyARwBqUYJFFWiFC5IHMglUmw/O9824X7iVIuCaAVgUL413LmKg6G1U+kUZToHyAPxGgUODcECRCMVBy62AjAM5rlKQtlUQZRqCaLZH/C7GsD13/tgkFDfRuAIZvMG8K1BSvUWRH0741FmuFqFLXeS6jG1Wj4zCwLE0xek1N6pDbFMwk0dIMqM1ad3A/NexaFbuscuVDNaAIF3zhXkl9nqtKkHLLTpXuCW6tyBVNMweCXsFd/SnxH+P3j+AAAAAElFTkSuQmCC")
     }
 
-    #user-repositories-list > ul {
+    gridTemplate() {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 16px;
+    }
 
-        margin-top: 16px;
+    description() {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-        > li.py-4 {
-            min-width: 0;
-            padding: 16px i;
+    itemCard() {
+        padding: 16px i;
+        background-color: var(--color-canvas-default);
+        border-color: var(--color-border-default);
+        border-radius: var(--primer-borderRadius-medium, 6px);
+        border-style: solid;
+        border-width: var(--primer-borderWidth-thin, 1px);
+    }
+
+    if (starsTap=="Enabled") {
+        #user-starred-repos .mt-5 {
             position: relative;
+            max-width: 100% i;
 
-            background-color: var(--color-canvas-default);
-            border-color: var(--color-border-default);
-            border-radius: var(--primer-borderRadius-medium, 6px);
-            border-style: solid;
-            border-width: var(--primer-borderWidth-thin, 1px);
+            .col-lg-12 {
+                gridTemplate();
+                margin-top: 90px;
 
-            > .d-inline-block {
-
-                /* Repository's name */
-                div.d-inline-block.mb-1 {
-
-                    > h3 {
-                        font-size: 14px;
-                        if showRepository {
-                            &::before {
-                                display: inline-block i;
-                                position: relative;
-                                top: 3px;
-                                margin-right: 4px;
-                                width: 16px;
-                                height: 16px;
-                                content: var(--repository-icon);
-                            }
-                        }
-                    }
-
-                    > span {
-                        display: none if hideForked;
-                    }
+                .py-4 {
+                    itemCard();
                 }
 
-                /* Description */
-                p.col-9 {
-                    padding-right: 0 i;
-                    margin-bottom: 0 i;
-
+                p[itemprop="description"] {
                     width: 100%;
+                }
 
-                    if (not fullDescription) {
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
+                > .position-relative {
+                    top: 0;
+                    position: absolute i;
+                    width: 100% i;
+                }
+
+                if starNewDesign {
+                    form > button > span {
+                        display: none i if hideStarText;
+                    }
+
+                    .mr-2 {
+                        margin-right: 0 i;
+                    }
+
+                    .BtnGroup-parent:first-child .BtnGroup-item {
+                        border-right-width: 1px;
+                        border-top-right-radius: 6px;
+                        border-bottom-right-radius: 6px;
+                    }
+
+                    details[id^="details-user-list"] {
+                        display: none i if dropDownMenu;
                     }
                 }
 
-                /* Hide Topics */
-                > .topics-row-container {
-                    display: none i if hideTopics;
+                a[href^="/sponsors/"] {
+                    display: none i if stHideSponsors;
                 }
 
-                /* Bottom descriptions  */
-                div.f6.color-fg-muted.mt-2 {
-                    > span:not(.ml-0) {
-                        display: none i if hideLicense;
-                    }
-
-                    a[href*="help+wanted"] {
-                        display: none if hideHelp;
-                    }
+                span.text-normal {
+                    display: none i if stHideAuthor;
                 }
             }
+        }
+    }
 
-            > .col-2 {
-                display: contents i;
+    if (searchPage=="Enabled") {
+        /* Search  */
+        ul.repo-list {
+            gridTemplate();
+            margin-top: 16px;
 
-                .starring-container .unstarred, .starring-container.on .starred {
-                    margin-left: 0;
+            * {
+                min-width: 0 i;
+            }
+
+            > li.py-4 {
+                itemCard();
+
+                p.mb-1 {
+                    if (not spfullDescription) {
+                        description()
+                    }
                 }
 
-                .starring-container {
-                    position: absolute;
-                    right: 16px;
+                div.mr-3:has( > relative-time) {
+                    display: none if spHideUpdate;
+                }
 
-                    if (starNewDesign=="Enabled") {
+                div.d-flex > div.d-flex.flex-items-center.flex-justify-end.flex-shrink-0.flex-auto {
+                    display: none i if spHideSponsors;
+                }
+                
+                a[href^="/topics/"] {
+                    display: none i if spHideTopics;
+                }
 
-                        if dropDownMenu {
-                            .BtnGroup-parent .BtnGroup-item {
-                                border-right-width: 1px;
-                                border-top-right-radius: 6px;
-                                border-bottom-right-radius: 6px;
-                            }
+                a[href*="issue"] {
+                    display: none if spHideHelp;
+                }
+            }
+        }
+    }
 
-                            details {
-                                display: none i;
+    if (resTap=="Enabled") {
+
+        /* Repositories tap */
+        #user-repositories-list > ul {
+            gridTemplate();
+            margin-top: 16px;
+
+            > li.py-4 {
+                itemCard();
+
+                min-width: 0;
+                padding: 16px i;
+                position: relative;
+
+                > .d-inline-block {
+
+                    /* Repository's name */
+                    div.d-inline-block.mb-1 {
+
+                        > h3 {
+                            font-size: 14px;
+                            if showRepository {
+                                &::before {
+                                    display: inline-block i;
+                                    position: relative;
+                                    top: 3px;
+                                    margin-right: 4px;
+                                    width: 16px;
+                                    height: 16px;
+                                    content: var(--repository-icon);
+                                }
                             }
                         }
 
-                        if hideStarText {
-                            form > button > span {
-                                display: none i;
+                        > span {
+                            display: none if hideForked;
+                        }
+                    }
+
+                    /* Description */
+                    p.col-9 {
+                        margin-bottom: 0 i;
+
+                        width: 100%;
+
+                        if (not fullDescription) {
+                            description()
+                        }
+                    }
+
+                    /* Hide Topics */
+                    > .topics-row-container {
+                        display: none i if hideTopics;
+                    }
+
+                    /* Bottom descriptions  */
+                    div.f6.color-fg-muted.mt-2 {
+                        > span:not(.ml-0) {
+                            display: none i if hideLicense;
+                        }
+
+                        a[href*="issue"] {
+                            display: none if hideHelp;
+                        }
+                    }
+                }
+
+                > .col-2 {
+                    display: contents i;
+
+                    .starring-container .unstarred, .starring-container.on .starred {
+                        margin-left: 0;
+                    }
+
+                    .starring-container {
+                        position: absolute;
+                        right: 16px;
+
+                        if (starNewDesign=="Enabled") {
+
+                            if dropDownMenu {
+                                .BtnGroup-parent .BtnGroup-item {
+                                    border-right-width: 1px;
+                                    border-top-right-radius: 6px;
+                                    border-bottom-right-radius: 6px;
+                                }
+
+                                details {
+                                    display: none i;
+                                }
                             }
 
-                            .btn-sm .octicon,
-                            .starred .starred-button-icon {
-                                margin-right: 0 i;
+                            if hideStarText {
+                                form > button > span {
+                                    display: none i;
+                                }
+
+                                .btn-sm .octicon,
+                                .starred .starred-button-icon {
+                                    margin-right: 0 i;
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            .col-lg-9 {
-                width: 100%;
-            }
+                .col-lg-9 {
+                    width: 100%;
+                }
 
-            .col-9,
-            .f6 {
-                font-size: 12px i;
-            }
+                .col-9,
+                .f6 {
+                    font-size: 12px i;
+                }
 
-            /* Remove graph */
-            div.text-right.hide-lg.hide-md.hide-sm.hide-xs.flex-self-end,
-            div.text-right.hide-lg.hide-md.hide-sm.hide-xs.flex-self-end.mt-2 {
-                display: none i;
+                /* Remove graph */
+                div.text-right.hide-lg.hide-md.hide-sm.hide-xs.flex-self-end,
+                div.text-right.hide-lg.hide-md.hide-sm.hide-xs.flex-self-end.mt-2 {
+                    display: none i;
+                }
             }
         }
     }
