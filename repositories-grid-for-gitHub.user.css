@@ -1,0 +1,161 @@
+/* ==UserStyle==
+@name           Repositories Grid For GitHub
+@author         sapondanaisriwan <sapondanaisriwan@gmail.com> (https://github.com/sapondanaisriwan)
+@description    If you want to submit a bug or request a feature please report via github issue. Since I receive so many emails, I can't reply to them all.
+@namespace      https://userstyles.world/user/sapondanaisriwan
+@homepageURL    https://github.com/sapondanaisriwan/Repositories-Grid-For-GitHub
+@supportURL     https://github.com/sapondanaisriwan/Repositories-Grid-For-GitHub/issues
+@version        1.0.0
+@license        MIT
+@preprocessor   stylus
+
+@var checkbox fullDescription   "💬 Full Description" 0
+@var checkbox showRepository    "📗 Show Repository Icon" 1
+@var select starNewDesign       "⭐ Star New Design" ["Enabled", "Disabled"]
+@var checkbox hideStarText      "  💬 Hide Text" 1
+@var checkbox dropDownMenu      "  ⬇️ Hide Drop Down Menu" 0
+
+@var checkbox hideForked        "🍴 Hide Forked Text" 0
+@var checkbox hideTopics        "🌍 Hide Topics" 1
+@var checkbox hideHelp	        "🆘 Hide Help Wanted" 1
+@var checkbox hideLicense	    "🪪 Hide License" 1
+==/UserStyle== */
+@-moz-document regexp("https?://github?.com(/.*)?") {
+    /* Variables */
+    i=!important;
+    t=!transparent;
+
+    :root {
+        --repository-icon: url("https://user-images.githubusercontent.com/64634605/229117567-4202d4fc-4dc7-417f-962b-e85e638f21d2.png")
+    }
+
+    #user-repositories-list > ul {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+
+        margin-top: 16px;
+
+        > li.py-4 {
+            min-width: 0;
+            padding: 16px i;
+            position: relative;
+
+            background-color: var(--color-canvas-default);
+            border-color: var(--color-border-default);
+            border-radius: var(--primer-borderRadius-medium, 6px);
+            border-style: solid;
+            border-width: var(--primer-borderWidth-thin, 1px);
+
+            > .d-inline-block {
+
+                /* Repository's name */
+                div.d-inline-block.mb-1 {
+
+                    > h3 {
+                        font-size: 14px;
+                        if showRepository {
+                            &::before {
+                                display: inline-block i;
+                                position: relative;
+                                top: 3px;
+                                margin-right: 4px;
+                                width: 16px;
+                                height: 16px;
+                                content: var(--repository-icon);
+                            }
+                        }
+                    }
+
+                    > span {
+                        display: none if hideForked;
+                    }
+                }
+
+                /* Description */
+                p.col-9 {
+                    padding-right: 0 i;
+                    margin-bottom: 0 i;
+
+                    width: 100%;
+
+                    if (not fullDescription) {
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                }
+
+                /* Hide Topics */
+                > .topics-row-container {
+                    display: none i if hideTopics;
+                }
+
+                /* Bottom descriptions  */
+                div.f6.color-fg-muted.mt-2 {
+                    > span:not(.ml-0) {
+                        display: none i if hideLicense;
+                    }
+
+                    a[href*="help+wanted"] {
+                        display: none if hideHelp;
+                    }
+                }
+            }
+
+            > .col-2 {
+                display: contents i;
+
+                .starring-container .unstarred, .starring-container.on .starred {
+                    margin-left: 0;
+                }
+
+                .starring-container {
+                    position: absolute;
+                    right: 16px;
+
+                    if (starNewDesign=="Enabled") {
+
+                        if dropDownMenu {
+                            .BtnGroup-parent .BtnGroup-item {
+                                border-right-width: 1px;
+                                border-top-right-radius: 6px;
+                                border-bottom-right-radius: 6px;
+                            }
+
+                            details {
+                                display: none i;
+                            }
+                        }
+
+                        if hideStarText {
+                            form > button > span {
+                                display: none i;
+                            }
+
+                            .btn-sm .octicon,
+                            .starred .starred-button-icon {
+                                margin-right: 0 i;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .col-lg-9 {
+                width: 100%;
+            }
+
+            .col-9,
+            .f6 {
+                font-size: 12px i;
+            }
+
+            /* Remove graph */
+            div.text-right.hide-lg.hide-md.hide-sm.hide-xs.flex-self-end,
+            div.text-right.hide-lg.hide-md.hide-sm.hide-xs.flex-self-end.mt-2 {
+                display: none i;
+            }
+        }
+    }
+}
