@@ -15,6 +15,7 @@
 
 @var select resTap                "📚 Respasatories Tap" ["Enabled", "Disabled"]
 @var checkbox fullDescription     "  💬 Full Description" 0
+@var checkbox resNoDescription    "  💬 Placeholder 'No Description'" 0
 @var checkbox showRepository      "  📗 Show Repository Icon" 1
 
 @var checkbox hideForked          "  🍴 Hide Forked Text" 0
@@ -23,6 +24,7 @@
 @var checkbox hideLicense	      "  🪪 Hide License" 1
 
 @var select starsTap              "⭐ Stars Tap" ["Enabled", "Disabled"]
+@var checkbox stNoDescription     "  💬 Placeholder 'No Description'" 0
 @var checkbox stHideSponsors      "  💵 Hide Sponsors" 1
 @var checkbox stHideAuthor        "  🖊️ Hide Author" 1
 
@@ -55,6 +57,12 @@
         text-overflow: ellipsis;
     }
 
+    noDescription() {
+        content: "No description provided"
+        color: var(--fgColor-muted, var(--color-fg-muted)) i;
+        font-style: italic;
+    }
+    
     itemCard() {
         padding: 16px i;
         background-color: var(--color-canvas-default);
@@ -75,12 +83,17 @@
 
                 .py-4 {
                     itemCard();
+                    if (stNoDescription) {
+                        > div:nth-child(3):not(:has(p[itemprop="description"]))::before {
+                            noDescription()
+                        }
+                    }
                 }
 
                 p[itemprop="description"] {
                     width: 100%;
                 }
-
+                
                 > .position-relative {
                     top: 0;
                     position: absolute i;
@@ -205,7 +218,13 @@
                             description()
                         }
                     }
-
+                    
+                    if (resNoDescription) {
+                        > div:nth-child(2):not(:has(p[itemprop="description"]))::before {
+                            noDescription()
+                        }
+                    }
+                    
                     /* Hide Topics */
                     > .topics-row-container {
                         display: none i if hideTopics;
